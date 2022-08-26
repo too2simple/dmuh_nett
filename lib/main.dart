@@ -84,7 +84,8 @@ class MyFormState extends State {
               ),
               maxLines: 5,
               validator: (value) {
-                if (value!.isEmpty) return "Текст надто короткий";
+                if (value?.trim().isEmpty ?? true)
+                  return "Текст надто короткий";
               },
             ),
             Spacer(),
@@ -99,23 +100,40 @@ class MyFormState extends State {
                       {
                         'chat_id': '-1001478942370',
                         'text':
-                            "Логін: ${_loginController.text}\n Телефон: ${_foneNumber.text}\n Проблема: ${_issueController.text}"
+                            "Логін: ${_loginController.text}\n Телефон: ${_foneNumber.text}\n Проблема: ${_issueController.text.trim()}"
                       });
-                  var response = await http.get(url);
-                  String message =
-                      "Заявку надіслано, найближчим часом з вами зв'яжеться майстер.";
+                  try {
+                    var response = await http.get(url);
+                    String message =
+                        "Заявку надіслано, найближчим часом з вами зв'яжеться майстер.";
 
-                  if (response.statusCode == 200) {
-                    message;
-                  } else {
-                    message = 'error';
+                    if (response.statusCode == 200) {
+                      message;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text(message),
+                        ),
+                      );
+                      _issueController.clear();
+                    } else {
+                      message =
+                          'Помилка, не вдалося відправити зявку. Спробуйте пізніше.';
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(message),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text('Проблема з доступом до інтернету'),
+                      ),
+                    );
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: Colors.green,
-                      content: Text(message),
-                    ),
-                  );
                 }
               },
             ),
