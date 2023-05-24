@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:quiver/async.dart';
 
 import 'package:dmuh_net/bloc/home_page_bloc.dart';
 import 'package:dmuh_net/bloc/home_page_event.dart';
@@ -7,7 +6,7 @@ import 'package:dmuh_net/bloc/home_page_state.dart';
 import 'package:dmuh_net/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class HomePage extends StatefulWidget {
@@ -138,6 +137,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     validator: (value) {
                       if (value!.isEmpty) return " Введіть ваший логін";
+                      return null;
                     },
                     onChanged: (value) {
                       _homePageBloc.inputEventSink.add(LoginEvent(value));
@@ -186,6 +186,7 @@ class _HomePageState extends State<HomePage> {
                     validator: (value) {
                       if (value?.trim().isEmpty ?? true)
                         return "Текст надто короткий";
+                      return null;
                     },
                     onChanged: (value) {
                       _homePageBloc.inputEventSink.add(IssueEvent(value));
